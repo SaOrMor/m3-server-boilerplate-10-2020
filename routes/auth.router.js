@@ -4,6 +4,7 @@ const createError = require("http-errors");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const User = require("../models/user.model");
+const Campaign = require("../models/campaign.model");
 
 // HELPER FUNCTIONS
 const {
@@ -14,9 +15,9 @@ const {
 
 // POST '/auth/signup'
 router.post('/signup', isNotLoggedIn, validationLogin, (req, res, next) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  User.findOne({ username })
+  User.findOne({ email })
     .then( (foundUser) => {
 
       if (foundUser) {
@@ -28,7 +29,7 @@ router.post('/signup', isNotLoggedIn, validationLogin, (req, res, next) => {
         const salt = bcrypt.genSaltSync(saltRounds);
         const encryptedPassword = bcrypt.hashSync(password, salt);
 
-        User.create( { username, password: encryptedPassword })
+        User.create( { email, password: encryptedPassword })
           .then( (createdUser) => {
             // set the `req.session.currentUser` using newly created user object, to trigger creation of the session and cookie
             createdUser.password = "*";
@@ -56,9 +57,9 @@ router.post('/signup', isNotLoggedIn, validationLogin, (req, res, next) => {
 
 // POST '/auth/login'
 router.post('/login', isNotLoggedIn, validationLogin, (req, res, next) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  User.findOne({ username })
+  User.findOne({ email })
     .then( (user) => {
       if (! user) {
         // If user with that username can't be found, respond with an error
@@ -112,6 +113,25 @@ router.get('/me', isLoggedIn, (req, res, next) => {
     .json(currentUserSessionData);
 
 })
+
+
+// getting all the campaign of a specific user to show on the advertising page, by campaign name
+
+router.get('/campaign', (req, res, next) => {
+  
+  const userId = req.session.currentUser._id;
+
+  User
+  .findById(userId)
+  .populate("campaigns")
+  .then( (foundUser ) => {
+
+  res.status(200).json(foundUser);
+  })
+  .catch(err => {
+      res.status(500).json(err);
+  })
+});
 
 
 module.exports = router;

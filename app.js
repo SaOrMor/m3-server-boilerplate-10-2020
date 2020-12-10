@@ -11,6 +11,8 @@ require('dotenv').config();
 
 const authRouter = require('./routes/auth.router');
 
+// require campaignRouter
+const campaignRouter = require('./routes/campaign.router');
 
 // MONGOOSE CONNECTION
 mongoose
@@ -60,7 +62,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ROUTER MIDDLEWARE
 app.use('/auth', authRouter);
-
+app.use('/api', campaignRouter);
 
 
 // ERROR HANDLING
