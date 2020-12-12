@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 const campaignSchema = new Schema({
 firstname: String,
 lastname: String,
-company: String,
+campaignname: String,
+companyname: String,
 startingdate: String,
 endingdate: String,
 budget: Number,

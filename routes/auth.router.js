@@ -16,7 +16,7 @@ const {
 // POST '/auth/signup'
 router.post('/signup', isNotLoggedIn, validationLogin, (req, res, next) => {
   const { email, password } = req.body;
-
+console.log(email)
   User.findOne({ email })
     .then( (foundUser) => {
 

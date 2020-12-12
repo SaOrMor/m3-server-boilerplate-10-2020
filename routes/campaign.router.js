@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 
 // cloudinary
-const uploader = require("./../configs/cloudinary-setup");
+const uploader = require("./../config/cloudinary-setup");
 
 
 const User = require("../models/user.model");
@@ -25,10 +25,10 @@ router.post("/upload", uploader.single("image"), (req, res, next) => {
 
 // creating a post post/api/campaign
 
-router.post('/', (req, res, next) => {
-const { firstname, lastname, company, startingdate, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction} = req.body;
+router.post('/campaign', (req, res, next) => {
+const { firstname, lastname, campaignname, companyname, startingdate, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction} = req.body;
 
-Campaign.create({ firstname, lastname, company, startingdate, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction })
+Campaign.create({ firstname, lastname, campaignname, companyname, startingdate, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction })
 .then((createdCampaign) => {
     res
     .status(201)
@@ -43,7 +43,7 @@ Campaign.create({ firstname, lastname, company, startingdate, endingdate, budget
 
 // get/api/campaign non so se serve
 
-router.get('/', (req, res, next) => {
+router.get('/campaign/advertiser', (req, res, next) => {
 
     Campaign
     .find()
@@ -81,14 +81,14 @@ router.get('/:id', (req,res) => {
 
 router.put('/:id', (req,res,next) => {
     const { id } = req.params;
-    const { endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction } = req.body;
+    const {campaignname, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         res.status(400).json({message: 'Specified id is not valid'});
         return;
     }
     Campaign
-    .findByIdAndUpdate(id, {endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction}, {new: true})
+    .findByIdAndUpdate(id, {campaignname, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction}, {new: true})
     .then((updatedCampaign) => {
         res.status(200).json(updatedCampaign);
     })
