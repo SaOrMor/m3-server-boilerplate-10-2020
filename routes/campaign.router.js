@@ -25,31 +25,46 @@ router.post("/upload", uploader.single("image"), (req, res, next) => {
 
 // creating a post post/api/campaign
 
-router.post('/campaign', (req, res, next) => {
+router.post('/campaign/:id', (req, res, next) => {
 const { firstname, lastname, campaignname, companyname, startingdate, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction} = req.body;
+const {id} = req.params;
 
 Campaign.create({ firstname, lastname, campaignname, companyname, startingdate, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction })
-.then((createdCampaign) => {
-    res
-    .status(201)
-    .json(createdCampaign);
+.then((createdCampaigns) => {
+    User
+    .findByIdAndUpdate
+    (id, 
+    {$push:{campaigns:createdCampaigns._id}}, {new: true})
+    .then((updatedUser) => {
+
+        res
+        .status(201)
+        .json(updatedUser);
+    })
+    .catch((err)=> {
+        res
+        .status(500) //internal server error
+        .json(err)
+    })
 })
 .catch((err)=> {
     res
     .status(500) //internal server error
     .json(err)
 })
+
 })
 
 // get/api/campaign non so se serve
 
 router.get('/campaign/advertiser', (req, res, next) => {
-
+    
     Campaign
     .find()
     .then( (allTheCampaigns ) => {
     res.status(200).json(allTheCampaigns);
     })
+   
     .catch(err => {
         res.status(500).json(err);
     })
@@ -57,7 +72,7 @@ router.get('/campaign/advertiser', (req, res, next) => {
 
 // get/api/campaign/:id specific non so se serve, ho in basso quella per le statistcs
 
-router.get('/:id', (req,res) => {
+router.get('/joe/:id', (req,res) => {
     const { id } = req.params;
 
     if ( !mongoose.Types.ObjectId.isValid(id)) {
@@ -140,6 +155,32 @@ router.get('/statistics/:id', (req, res, next) => {
     })
 })
 
+
+// get specific campaigns by user
+
+
+router.get('/users/:id', (req,res) => {
+     const {id} = req.params;
+
+    console.log(req.session.currentUser);
+
+    if ( !mongoose.Types.ObjectId.isValid(id)) {
+        res
+        .status(400) //bad request
+        .json({ message: 'specified id is not valid'})
+        return;
+    }
+
+    User
+    .findById( id )
+    .populate('campaigns')
+    .then( (foundUser) => {
+        res.status(200).json(foundUser);
+    })
+    .catch((err) => {
+    res.status(500).json(err);
+})
+});
 
 module.exports = router;
 
