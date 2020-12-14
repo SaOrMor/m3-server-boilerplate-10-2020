@@ -114,7 +114,7 @@ router.put('/:id', (req,res,next) => {
 
 // delete campaign
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/campaign/deletecampaign/:id', (req, res, next) => {
     const { id } = req.params;
 
     if ( !mongoose.Types.ObjectId.isValid(id)) {
@@ -135,7 +135,7 @@ router.delete('/:id', (req, res, next) => {
 
 // campaign Statistics gettind the Statistics of the campaign
 
-router.get('/statistics/:id', (req, res, next) => {
+router.get('/campaign/statistics/:id', (req, res, next) => {
     const {id} = req.params;
 
     if ( !mongoose.Types.ObjectId.isValid(id)) {
@@ -148,6 +148,7 @@ router.get('/statistics/:id', (req, res, next) => {
     Campaign
     .findById( id)
     .then( (campaign) => {
+        console.log(campaign);
         res.status(200).json(campaign)
     })
     .catch((err) => {
