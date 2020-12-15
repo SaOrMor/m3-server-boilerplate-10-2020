@@ -97,7 +97,10 @@ router.get('/joe/:id', (req,res) => {
 router.put('/campaign/edit/:id', (req,res,next) => {
     const { id } = req.params;
     const {campaignname, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction } = req.body;
-
+    
+    console.log("things in campaigns", campaignname, endingdate, age, gender )
+    console.log("id", id)
+    
     if (!mongoose.Types.ObjectId.isValid(id)) {
         res.status(400).json({message: 'Specified id is not valid'});
         return;

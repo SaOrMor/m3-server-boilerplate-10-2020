@@ -11,12 +11,12 @@ endingdate: String,
 budget: Number,
 image: String,
 age: Number,
-gender: [String],
-country: [String],
-interests: [String],
-operatingsystem: [String],
-education: [String],
-jobfunction: [String]
+gender: String,
+country: String,
+interests: String,
+operatingsystem: String,
+education: String,
+jobfunction: String
 });
 
 const Campaign = mongoose.model('Campaign', campaignSchema);
