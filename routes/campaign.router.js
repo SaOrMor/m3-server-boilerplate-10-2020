@@ -94,7 +94,7 @@ router.get('/joe/:id', (req,res) => {
 
 // put route to update the campaign
 
-router.put('/:id', (req,res,next) => {
+router.put('/campaign/edit/:id', (req,res,next) => {
     const { id } = req.params;
     const {campaignname, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction } = req.body;
 
