@@ -25,11 +25,14 @@ router.post("/upload", uploader.single("image"), (req, res, next) => {
 
 // creating a post post/api/campaign
 
-router.post('/campaign/:id', (req, res, next) => {
-const { firstname, lastname, campaignname, companyname, startingdate, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction} = req.body;
-const {id} = req.params;
 
-Campaign.create({ firstname, lastname, campaignname, companyname, startingdate, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction })
+
+router.post('/campaign/:id', (req, res, next) => { 
+    const { firstname, lastname, campaignname, companyname, startingdate, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction} = req.body;
+const {id} = req.params;
+console.log( "req.body", req.body)
+Campaign.create(
+    { firstname, lastname, campaignname, companyname, startingdate, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction })
 .then((createdCampaigns) => {
     User
     .findByIdAndUpdate
@@ -40,17 +43,20 @@ Campaign.create({ firstname, lastname, campaignname, companyname, startingdate, 
         res
         .status(201)
         .json(updatedUser);
+        
     })
-    .catch((err)=> {
-        res
+    .catch((err)=> {next(err)
+          res
         .status(500) //internal server error
-        .json(err)
-    })
+         .json(err)
+    }) 
+    res.status(201).json(createdCampaigns)
 })
-.catch((err)=> {
-    res
-    .status(500) //internal server error
-    .json(err)
+.catch((err)=> { next(err)
+    
+     res
+     .status(500) //internal server error
+     .json(err)
 })
 
 })
@@ -94,22 +100,20 @@ router.get('/joe/:id', (req,res) => {
 
 // put route to update the campaign
 
-router.put('/campaign/edit/:id', (req,res,next) => {
+router.post('/campaign/edit/:id', (req,res,next) => {
     const { id } = req.params;
     const {campaignname, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction } = req.body;
-    
-    console.log("things in campaigns", campaignname, endingdate, age, gender )
-    console.log("id", id)
     
     if (!mongoose.Types.ObjectId.isValid(id)) {
         res.status(400).json({message: 'Specified id is not valid'});
         return;
     }
-    Campaign
-    .findByIdAndUpdate(id, {campaignname, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction}, {new: true})
+     Campaign
+   .findByIdAndUpdate(id, {campaignname, endingdate, budget, image, age, gender, country, interests, operatingsystem, education, jobfunction}, {new: true})
     .then((updatedCampaign) => {
-        res.status(200).json(updatedCampaign);
-    })
+        console.log("updated campaign", updatedCampaign)
+     res.status(200).json(updatedCampaign);
+   })
     .catch(err => {
         res.status(500).json(err);
     })
