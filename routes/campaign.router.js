@@ -78,7 +78,7 @@ router.get('/campaign/advertiser', (req, res, next) => {
 
 // get/api/campaign/:id specific non so se serve, ho in basso quella per le statistcs
 
-router.get('/joe/:id', (req,res) => {
+router.get('/onecampaign/:id', (req,res) => {
     const { id } = req.params;
 
     if ( !mongoose.Types.ObjectId.isValid(id)) {
